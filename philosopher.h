@@ -6,6 +6,6 @@
 extern int N; 
 extern pthread_mutex_t *forks;
 
-void *philosopher(void *arg);
+int philosopher(void *arg);
 
 #endif
