@@ -1,22 +1,16 @@
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
+// import global vars
+#include "philosopher.h"
+
 // import threads
 #include <pthread.h>
 
-// import time counter
-#include <time.h>
+void *philosopher(void *arg) {
 
-int philosopher(void *arg) {
-    // create a mutex to ensure right count
-    pthread_mutex_t counterMutex;
-    pthread_mutex_init(&counterMutex, null);
-
-    // counter
-    int soupEatenCounter = 0;
-
+    // define forks
     int id = *(int*)arg;
     int left = id;
     int right = (id + 1) % N;
@@ -26,15 +20,14 @@ int philosopher(void *arg) {
         pthread_mutex_lock(&forks[left]);
 
         // ensure deadlock happens
-        sleep(1000);
+        sleep(1);
 
         // picks right forks 
         pthread_mutex_lock(&forks[right]);
 
-
         // eat
         pthread_mutex_lock(&counterMutex);
-        soupEatenCounter++;
+        soupEaten++;
         pthread_mutex_unlock(&counterMutex);
         
         // unlock forks
@@ -43,5 +36,5 @@ int philosopher(void *arg) {
     }
 
     pthread_mutex_destroy(&counterMutex);
-    return soupEatenCounter;
+    return NULL;
 }
