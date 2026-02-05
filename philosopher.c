@@ -15,11 +15,12 @@ void *philosopher(void *arg) {
     int left = id;
     int right = (id + 1) % N;
 
+    // loop until thread is destroyed
     while (1) {
         // picks left forks
         pthread_mutex_lock(&forks[left]);
 
-        // ensure deadlock happens
+        // ensure deadlock happens - ensure fork is being using when other try to use
         sleep(1);
 
         // picks right forks 
@@ -35,6 +36,5 @@ void *philosopher(void *arg) {
         pthread_mutex_unlock(&forks[left]);
     }
 
-    pthread_mutex_destroy(&counterMutex);
     return NULL;
 }

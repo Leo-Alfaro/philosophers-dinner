@@ -45,7 +45,7 @@ int main(int argc, char* argv[]){
     }
 
     // kill deadlock after 15 seconds
-    sleep(15);
+    sleep(10);
 
     // cancel all threads and mutex
     for(int i = 0; i < N; i++){
