@@ -27,6 +27,9 @@ pthread_mutex_t counterMutex;
 // create a mutex to sum all waiting times
 pthread_mutex_t waitTimeMutex;
 
+// flag to control the while loop
+volatile int programa_rodando = 1;
+
 int main(int argc, char* argv[]){
 
     // gets arguments
@@ -39,6 +42,7 @@ int main(int argc, char* argv[]){
 
     // init mutexs
     pthread_mutex_init(&counterMutex, NULL);
+    pthread_mutex_init(&waitTimeMutex, NULL);
 
     // init in separate for's to ensure all thread init together
     for(int i = 0; i < N; i++){
@@ -53,9 +57,10 @@ int main(int argc, char* argv[]){
     // kill deadlock after 10 seconds
     sleep(10);
 
-    // cancel all threads and mutex
+    programa_rodando = 0;
+    // ensure that all the threads are gone to end together 
     for(int i = 0; i < N; i++){
-        pthread_cancel(*(philosopherThread + i));
+        pthread_join(philosopherThread[i], NULL);
     }
 
     printf("Total de sopas: %d\n", soupEaten);
@@ -64,6 +69,9 @@ int main(int argc, char* argv[]){
 
     pthread_mutex_destroy(&counterMutex);
     pthread_mutex_destroy(&waitTimeMutex);
+    for(int i = 0; i < N; i++){
+        pthread_mutex_destroy(&forks[i]);
+    }
 
     // clean to avoid memory leak
     free(forks);
