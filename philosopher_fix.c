@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 
 // import global vars
 #include "philosopher.h"
 
 // import threads
 #include <pthread.h>
+
+clock_t start, end;
 
 void *philosopher(void *arg) {
 
@@ -18,6 +21,8 @@ void *philosopher(void *arg) {
     // loop until thread is destroyed
     while (1) {
 
+        start = clock();
+
         // forks
         if (id % 2 == 0) {
             // even philosopher (left first)
@@ -28,6 +33,12 @@ void *philosopher(void *arg) {
             pthread_mutex_lock(&forks[right]);
             pthread_mutex_lock(&forks[left]);
         }
+
+        end = clock();
+
+        pthread_mutex_lock(&waitTimeMutex);
+        waitingTime += ((double)(end - start)) / CLOCKS_PER_SEC;
+        pthread_mutex_unlock(&waitTimeMutex);
 
         // eat
         pthread_mutex_lock(&counterMutex);

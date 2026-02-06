@@ -15,11 +15,17 @@ int N;
 // soupEaten
 int soupEaten;
 
+// total time spend for all philosphers while waiting
+double waitingTime;
+
 // forks
 pthread_mutex_t *forks;
 
 // create a mutex to ensure right count
 pthread_mutex_t counterMutex;
+
+// create a mutex to sum all waiting times
+pthread_mutex_t waitTimeMutex;
 
 int main(int argc, char* argv[]){
 
@@ -44,7 +50,7 @@ int main(int argc, char* argv[]){
         pthread_create((philosopherThread + i), NULL, philosopher, (philosopherId + i));
     }
 
-    // kill deadlock after 15 seconds
+    // kill deadlock after 10 seconds
     sleep(10);
 
     // cancel all threads and mutex
@@ -52,9 +58,17 @@ int main(int argc, char* argv[]){
         pthread_cancel(*(philosopherThread + i));
     }
 
-    printf("%d\n", soupEaten);
+    printf("Total de sopas: %d\n", soupEaten);
+    printf("Desempenho (sopas por segundo): %.2f\n", (soupEaten/10.0));
+    printf("Tempo de espera médio: %f", (soupEaten ? waitingTime/soupEaten : 0.0));
 
     pthread_mutex_destroy(&counterMutex);
+    pthread_mutex_destroy(&waitTimeMutex);
+
+    // clean to avoid memory leak
+    free(forks);
+    free(philosopherThread);
+    free(philosopherId);
 
     return 0;
 }
