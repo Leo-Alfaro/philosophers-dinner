@@ -9,17 +9,17 @@
 // import threads
 #include <pthread.h>
 
-clock_t start, end;
+
 
 void *philosopher(void *arg) {
-
     // define forks
     int id = *(int*)arg;
     int left = id;
     int right = (id + 1) % N;
 
+    clock_t start, end;
     // loop until thread is destroyed
-    while (1) {
+    while (programa_rodando) {
 
         start = clock();
 
@@ -45,6 +45,9 @@ void *philosopher(void *arg) {
         soupEaten++;
         pthread_mutex_unlock(&counterMutex);
         
+        // eating time
+        usleep(100);
+        
         // unlock forks (inverse logic)
         if (id % 2 == 0) {
             pthread_mutex_unlock(&forks[right]);
@@ -56,6 +59,6 @@ void *philosopher(void *arg) {
 
     }
 
-    pthread_mutex_destroy(&counterMutex);
+
     return NULL;
 }
