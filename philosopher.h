@@ -5,6 +5,7 @@
 
 // global vars
 extern int N; 
+extern volatile int programa_rodando;
 extern int soupEaten;
 extern double waitingTime;
 extern pthread_mutex_t *forks;
